@@ -16,12 +16,22 @@ resource "aws_internet_gateway" "gw" {
     Name = "TF-igw"
   }
 }
-resource "aws_subnet" "public-main" {
+resource "aws_subnet" "public-main-us-east-1a" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.10.0.0/24"
+  availability_zone = "us-east-1a"
+  tags = {
+     Name = "public-main subnet us-east-1a"
+
+  }
+}
+resource "aws_subnet" "public-main_us_east_1b" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.10.1.0/24"
+  availability_zone = "us-east-1b"
 
   tags = {
-    Name = "public-main"
+    Name = "Public Subnet main.us-east-1b"
   }
 }
 resource "aws_subnet" "private-main" {
@@ -32,4 +42,3 @@ resource "aws_subnet" "private-main" {
     Name = "private-subnet.Main"
   }
 }
-
