@@ -42,3 +42,25 @@ resource "aws_subnet" "private-main" {
     Name = "private-subnet.Main"
   }
 }
+resource "aws_route_table" "rt_public" {
+    vpc_id = aws_vpc.main.id
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.vpc.main-igw.id
+    }
+
+    tags = {
+        Name = "rt_public"
+    }
+}
+
+resource "aws_route_table_association" "rt_public1" {
+    subnet_id = aws_subnet.public_main_us_east_1a.id
+    route_table_id = aws_route_table.vpc.main_public.id
+}
+
+resource "aws_route_table_association" "rt_public2" {
+    subnet_id = aws_subnet.public_main_us_east_1b.id
+    route_table_id = aws_route_table.vpc.main_public.id
+  }
