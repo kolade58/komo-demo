@@ -101,13 +101,64 @@ resource "aws_nat_gateway" "nat-gate1" {
   tags = {
     Name = "nat-gate1"
   }
-}
-  
+}  
 resource "aws_nat_gateway" "Nat2" {
   allocation_id = aws_eip.eip-nat-gate2.id
   subnet_id     = aws_subnet.private-main2.id
 
   tags = {
     Name = "nat-gate2"
-   }
+  }
 }
+resource "aws_instance" "Webo1" {
+  ami           				= "ami-0747bdcabd34c712a"
+  instance_type 				= "t2.micro"
+  availability_zone				= "us-east-1a"
+  associate_public_ip_address	= "true"
+  subnet_id						= aws_subnet.public-main-us-east-1a.id
+  ##security_groups				= "aws_security_group.allow_HTTP.id"
+  tags = {
+    Name = "Webo1"
+	Tier = "Web"
+    Subnet = "Public"
+  }
+ }
+resource "aws_instance" "Webo2" {
+  ami           				= "ami-0747bdcabd34c712a"
+  instance_type 				= "t2.micro"
+  availability_zone				= "us-east-1b"
+  associate_public_ip_address	= "true"
+  subnet_id						= aws_subnet.public-main_us_east_1b.id 
+  ##security_groups		= "aws_security_group.allow_HTTP.id"
+    tags = {
+    Name = "Webo2"
+	  Tier = "Web"
+    Subnet = "Public"
+  }
+ }
+resource "aws_instance" "serv_app1" {
+  ami           				= "ami-0747bdcabd34c712a"
+  instance_type 				= "t2.micro"
+  availability_zone				= "us-east-1e"
+  subnet_id						= aws_subnet.private-main.id 
+  ##security_groups				= "aws_security_group.allow_SSH.id"
+  tags = {
+    Name = "serv_app1"
+	  Tier = "Application"
+    Subnet = "Private"
+  }
+ }
+resource "aws_instance" "serv_app2" {
+  ami           				= "ami-0747bdcabd34c712a"
+  instance_type 				= "t2.micro"
+  availability_zone				= "us-east-1d"
+  subnet_id						= aws_subnet.private-main2.id
+  ##security_groups				= "aws_security_group.allow_SSH.id"
+  tags = {
+    Name = "serv_app2"
+	Tier = "Application"
+    Subnet = "Private"
+  }
+ }
+##Security group
+
