@@ -91,7 +91,7 @@ resource "aws_eip" "eip-nat-gate1" {
 resource "aws_eip" "eip-nat-gate2" {
   vpc      = true
   tags      = {
-  name     = "eip two"
+  Name     = "eip two"
  }
 }
 resource "aws_nat_gateway" "nat-gate1" {
