@@ -42,25 +42,72 @@ resource "aws_subnet" "private-main" {
     Name = "private-subnet.Main"
   }
 }
-resource "aws_route_table" "rt_public" {
-    vpc_id = aws_vpc.main.id
-
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.vpc.main-igw.id
-    }
-
+resource "aws_subnet" "private-main2" {
+    vpc_id     = aws_vpc.main.id
+    cidr_block = "10.10.3.0/24" 
     tags = {
-        Name = "rt_public"
-    }
-}
+      Name = "private-subnet.Main2"
+   }
+ }
+## Route Tables
+resource "aws_route_table" "Route_table" {
+  vpc_id = aws_vpc.main.id
+  
+   tags = {
+    Name    = "Route_table"
+  } 
+} 
+resource "aws_route_table" "route-table-priv" {
+ vpc_id  = aws_vpc.main.id
 
-resource "aws_route_table_association" "rt_public1" {
-    subnet_id = aws_subnet.public_main_us_east_1a.id
-    route_table_id = aws_route_table.vpc.main_public.id
-}
-
-resource "aws_route_table_association" "rt_public2" {
-    subnet_id = aws_subnet.public_main_us_east_1b.id
-    route_table_id = aws_route_table.vpc.main_public.id
+  tags = {
+   Name = "route-table-priv"
   }
+}
+## Route table association
+resource "aws_route_table_association" "public-ass1" {
+  subnet_id      = aws_subnet.public-main-us-east-1a.id
+  route_table_id = aws_route_table.Route_table.id
+}
+resource "aws_route_table_association" "public-ass2" {
+  subnet_id      = aws_subnet.public-main_us_east_1b.id
+  route_table_id = aws_route_table.Route_table.id
+}
+resource "aws_route_table_association" "private-ass1" {
+  subnet_id      = aws_subnet.private-main.id
+  route_table_id = aws_route_table.route-table-priv.id
+}
+resource "aws_route_table_association" "private-ass2" {
+   subnet_id      = aws_subnet.private-main2.id
+   route_table_id = aws_route_table.route-table-priv.id
+}
+##Nat-gateway
+resource "aws_eip" "eip-nat-gate1" {
+  vpc      = true
+  tags      = {
+ Name      = "eip one"
+ }   
+}
+resource "aws_eip" "eip-nat-gate2" {
+  vpc      = true
+  tags      = {
+  name     = "eip two"
+ }
+}
+resource "aws_nat_gateway" "nat-gate1" {
+  allocation_id = aws_eip.eip-nat-gate1.id
+  subnet_id     = aws_subnet.private-main.id
+
+  tags = {
+    Name = "nat-gate1"
+  }
+}
+  
+resource "aws_nat_gateway" "Nat2" {
+  allocation_id = aws_eip.eip-nat-gate2.id
+  subnet_id     = aws_subnet.private-main2.id
+
+  tags = {
+    Name = "nat-gate2"
+   }
+}
